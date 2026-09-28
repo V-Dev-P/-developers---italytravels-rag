@@ -14,18 +14,22 @@ def layout():
             "http://127.0.0.1:8000/rag/query",
             json={"prompt": text_input}
         )
-        data = response.json()
 
-        st.markdown("## Question:")
-        st.markdown(text_input)
+        if response.status_code != 200:
+            st.error(f"Something went wrong: {response.json().get('detail', 'Unknown error')}. Please try again.")
+        else:
+            data = response.json()
 
-        st.markdown("## Answer:")
-        st.markdown(data["answer"])
+            st.markdown("## Question:")
+            st.markdown(text_input)
 
-        st.markdown("## Source:")
-        st.markdown(data["filepath"])
+            st.markdown("## Answer:")
+            st.markdown(data["answer"])
 
-        st.image(ASSETS_PATH / f"{data['filename']}.jpg")
+            st.markdown("## Source:")
+            st.markdown(data["filepath"])
+
+            st.image(ASSETS_PATH / f"{data['filename']}.jpg")
 
 if __name__ == "__main__":
     layout()
